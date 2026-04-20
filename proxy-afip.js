@@ -42,12 +42,19 @@ async function procesarDJ(req, res) {
       const { attachment_id, filename, message_id, from_email, subject } = JSON.parse(body);
       console.log('[DJ] Recibido:', filename, 'de', from_email);
 
-      // 1. Obtener token de Gmail
-      const token = await getGmailToken();
-      console.log('[DJ] Token Gmail OK');
-
-      // 2. Descargar el PDF
-      const pdfBase64 = await downloadAttachment(message_id, attachment_id, token);
+      // 1. Descargar PDF desde la URL de Zapier/S3
+      console.log('[DJ] Descargando desde:', attachment_id);
+      const pdfBuffer = await new Promise((resolve, reject) => {
+        const u = new URL(attachment_id);
+        const r = https.request({ hostname: u.hostname, path: u.pathname + u.search, method: 'GET' }, pr => {
+          const chunks = [];
+          pr.on('data', c => chunks.push(c));
+          pr.on('end', () => resolve(Buffer.concat(chunks)));
+        });
+        r.on('error', reject);
+        r.end();
+      });
+      const pdfBase64 = pdfBuffer.toString('base64');
       console.log('[DJ] PDF descargado, tamanio:', pdfBase64.length);
 
       // 3. Procesar con Claude
