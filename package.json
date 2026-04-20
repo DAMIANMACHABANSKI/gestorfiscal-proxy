@@ -1,0 +1,9 @@
+{
+  "name": "gestorfiscal-proxy",
+  "version": "1.0.0",
+  "main": "proxy-afip.js",
+  "scripts": {
+    "start": "node proxy-afip.js"
+  },
+  "dependencies": {}
+}
