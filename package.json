@@ -5,5 +5,7 @@
   "scripts": {
     "start": "node proxy-afip.js"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@supabase/supabase-js": "^2.104.0"
+  }
 }
